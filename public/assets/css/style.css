@@ -1,0 +1,719 @@
+@import url('https://fonts.googleapis.com/css2?family=Bowlby+One&family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap');
+.header{
+    background-color: #1615158a;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+.header .company-name{
+    font-family: 'Inknut Antiqua', serif;
+    font-size: 24px;
+    color: white;
+}
+
+.header .icons{
+    width: 110px;
+}
+.header .icons img{
+    height: 24px;
+    width: 24px;
+    object-fit: contain;
+}
+.banner{
+    position: relative;
+}
+.banner .banner-image{
+    width: 100%;
+    height: 100%;
+}
+.banner .banner-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.banner .inner-text{
+    position: absolute;
+    top: 35%;
+    left: 10%;
+    width: 40%;
+}
+.banner .inner-text h2{
+    font-size: 42px;
+    font-family: 'Inknut Antiqua', serif;
+    color: white;
+    font-weight: 600;
+}
+.banner .inner-text p{
+    color: white;
+    font-size: 20PX;
+}
+.banner .inner-text p a{
+    text-decoration: none;
+    margin-bottom: 20px;
+    text-align: end;
+    color:yellow;
+}
+
+.banner .inner-text .form-group{
+    width: 75%;
+    position: relative;
+}
+.banner .inner-text .form-group input{
+    background-color: black;
+    border: none;
+    color: white;
+    padding-right: 70px;
+}
+.banner .inner-text .form-group input::placeholder{
+    color: #FFFFFF75;
+    padding-left: 20px;
+}
+
+.banner .inner-text .form-group .form-icons{
+    position: absolute;
+    top: 50%;
+    left: 92%;
+    width: 55px;
+    transform: translate(-50%,-50%);
+}
+.category-wrap{
+    position: relative;
+    width: 100%;
+    height: 250px;
+}
+.category-wrap .slider-wrapper{
+    position: relative;
+    top: -50%;
+    left: 0;
+    width: 100%;
+}
+.swiper {
+    width: 100%;
+    height: 325px;
+  }
+  .swiper-wrapper{
+    width: 100%;
+    height: 260px;
+  }
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+.swiper-pagination-bullet{
+    width: 19px;
+    height: 19px;
+    border-radius: 0;
+    background-color: #555555;
+}
+.swiper-pagination-bullet.swiper-pagination-bullet-active{
+    background-color: #1e1e1e;
+}
+
+.pet-supplies h2{
+    font-family: 'Inknut Antiqua', serif;
+    font-size: 42px;
+    font-weight: 600;
+}
+
+.supplies-list{
+    margin-top: 20px;
+}
+.supplies-list .list-item{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.supplies-list .list-item .item-image{
+    width: 100%;
+    height: 293px;
+}
+
+.supplies-list .list-item .item-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.list-item .item-detail{
+    margin-top: 10px;
+}
+.list-item .item-detail h3{
+    font-size: 20px;
+    font-weight: normal;
+
+}
+.list-item .item-detail .inner-text{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.list-item .item-detail .inner-text .price{
+    font-size: 18px;
+    font-weight: bold;
+}
+.list-item .item-detail .inner-text .cart-btn button{
+    width:40px;
+    height:30px;
+    padding: 0;
+    padding-bottom: 5px;    
+}
+.list-item .item-detail .inner-text .cart-btn button img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.more-button{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+.donation-banner{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.donation-banner img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.donation-banner .inner-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+}
+.donation-banner .inner-text h2{
+    font-size: 42px;
+    color: white;
+    font-family: 'Inknut Antiqua', serif;
+    font-weight: 600;
+}
+
+.donation-banner .inner-text p{
+    color: white;
+    font-family: 'Inknut Antiqua', serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 20px;
+}
+.donation-banner .inner-text .btn{
+    background-color: #DFAE00;
+    color: white;
+}
+
+footer{
+    background-color: rgba(0,0,0,0.9);
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+footer h2{
+    color: white;
+    font-family: 'Inknut Antiqua', serif;
+    font-weight: 600;
+    margin-bottom:20px
+}
+
+footer p{
+    color: #ddd;
+    font-family: 'Inknut Antiqua', serif;
+    font-size: 14px;
+}
+
+footer .location h3,footer .social-links h3{
+    color:white;
+    font-size: 2rem;
+    font-family: 'Inknut Antiqua', serif;
+    font-weight: 600;
+
+}
+
+footer .location ul{
+    list-style: none;   
+    padding: 0;
+    margin-top: 20px;
+}
+footer .location ul li{
+    font-size: 18px;
+    margin-bottom:20px;
+    color: white;
+}
+
+footer .location ul li a{
+    text-decoration: none;
+    color: white;
+}
+
+footer .social-links i{
+    margin-top:32px;
+    font-size: 32px;
+    color: white;
+    margin-right: 10px;
+}
+
+footer .copyright{
+    background-color: rgb(65 64 64);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+footer .copyright p{
+    margin: 0;
+    color: #acaaaa;
+    font-size: 12px;
+}
+
+/* Login page */
+
+.login-page{
+    margin-top: 140px;
+    margin-bottom: 40px;
+}
+.inner-login-page{
+    position: relative;
+    height: 500px;
+    border-radius: 30px;
+    overflow: hidden;
+}
+.login-page img{
+    width: 100%;    
+    height: 100%;
+    object-fit: cover;
+}
+.login-page .inner-text{
+    position: absolute;
+    left: 30px;
+    top: 30px;
+    width: 54%;
+}
+
+.login-page .inner-text h2{
+    font-family: 'Inknut Antiqua', serif;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.login-page .inner-text label{
+    font-size: 18px;
+    color: black;
+    font-weight: 500;
+}
+
+.login-page .inner-text .input-container{
+    width: 60%;
+    position: relative;
+}
+
+.login-page .inner-text .button-container{
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.login-page .inner-text .input-container input{
+    background-color: #DFAE00;
+    height: 40px;
+    padding-left: 50px;
+}
+
+.login-page .inner-text .input-container i{
+    font-size: 18px;
+    position: absolute;
+    left: 25px;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.login-page .inner-text .button-container button{
+    background-color: #DFAE00;
+    font-size: 18px;
+    border-radius: 24px;
+    font-weight: 500;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    
+}
+
+.login-page .inner-text .no-account{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.login-page .inner-text .no-account p{
+    font-size: 18px;
+    font-weight: 500;
+}
+.login-page .inner-text .no-account p a{
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+/* about page */
+
+.about-page{
+    margin-top: 140px;
+}
+
+.about-page figure{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 60px;
+}
+.about-page img{
+    width: 500px;
+    height: 100%;
+    object-fit: contain;
+}
+
+.about-page h2{
+    font-size: 50px;
+    font-family: 'Inknut Antiqua', serif;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.about-page .phone-details{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.about-page .phone-details .icons{
+    display: flex;
+    justify-content: space-around;
+    width: 100px;
+    margin-bottom: 30px;
+
+}
+.about-page .phone-details .icons i{
+    color: black;
+}
+
+.about-page .mission-description{
+    line-height: 1.6;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.about-page .adoption-list{
+    list-style-type: numbers;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.about-page .adoption-list li{
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* signup page */
+
+.signup-page{
+    margin-top: 140px;
+
+}
+.signup-page img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.inner-signup-page{
+    position: relative;
+    margin-bottom: 40px;
+    height: 800px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.signup-page .inner-text{
+    position: absolute;
+    left: 30px;
+    top: 30px;
+    width: 50%;
+}
+
+.signup-page .inner-text h2{
+    font-family: 'Inknut Antiqua', serif;
+    font-weight: 600;
+    margin-bottom: 40px;
+}
+
+.signup-page .inner-text label{
+    font-size: 18px;
+    color: black;
+    font-weight: 500;
+}
+
+.signup-page .inner-text input{
+    background-color: transparent;
+    height: 40px;
+    margin-bottom: 20px;
+    border-color: black;
+    border-radius: 20px;
+}
+
+.signup-page .inner-text input::placeholder{
+    color: #817D7D;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.signup-page .inner-text .input-container{
+    position: relative;
+}
+
+.signup-page .inner-text .input-container i{
+    font-size: 20px;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    color: #DFAE00;
+    cursor: pointer;
+}
+
+.signup-page .policy{
+    font-size: 16px;
+    display: block;
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.signup-page .inner-text button{
+    background-color: #DFAE00;
+    font-size: 20px;
+    border-radius: 24px;
+    font-weight: 500;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    
+}
+
+.signup-page .inner-text .button-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-page .have-account{
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 20px;
+
+}
+
+.signup-page .have-account a{
+    margin-left: 10px;
+    text-decoration: underline;
+}
+
+.signup-page .allies-account{
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 20px;
+}
+
+.signup-page .allies-account a{
+    text-decoration: underline;
+}
+
+.allies .inner-text{
+    width: 75%;
+    top: 10px;
+}
+
+.allies .inner-text form{
+    width: 75%;
+}
+
+.allies .inner-text form input[type='file']{
+    background-color: #DFAE00;
+}
+
+/* pet details page */
+.details-page{
+    margin-top: 140px;
+}
+
+.details-page figure{
+    width: 100%;
+}
+
+.details-page figure img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.details-page .detail-wrapper h2{
+    font-size: 30px;
+    font-family: 'Inknut Antiqua', serif;
+    font-weight: 600;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.details-page .detail-wrapper p{
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.details-page .detail-wrapper .amount{
+    color: #DFAE00;
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.details-page .detail-wrapper .quantity-wrapper{
+    display: flex;
+    font-size: 34px;
+    margin-bottom: 20px;
+    
+}
+.quantity-wrapper .increment{
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    cursor: pointer;
+}
+
+.quantity-wrapper .quantitiy{
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.quantity-wrapper .decrement{
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    cursor: pointer;
+}
+.button-wrapper .btn{
+    background-color: #DFAE00;
+    color: white;
+}
+
+.pet-page{
+    margin-top: 140px;
+    
+}
+
+.pet-image .mySwiper{
+    height: 500px;
+}
+
+.pet-image .mySwiper .swiper-wrapper{
+    height: 90%;
+}
+
+.pet-image .swiper-slide{
+    width: 340px !important;
+    display: flex;
+    align-items: center;
+}
+
+.pet-image .swiper-slide img{
+    width: 100%;
+    height: 50%;
+    object-fit: cover;
+
+}
+
+.pet-image .swiper-slide-next{
+    width: 510px !important;
+    z-index: 99;
+    border-radius: 20px;
+}
+
+.pet-image .swiper-slide-next img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50px;
+}
+
+.pet-image .swiper-pagination-bullet{
+    background-color: #DFAE00 !important;
+}
+
+.pet-image .swiper-pagination-bullet-active{
+    background-color: #1e1e1e !important;
+}
+
+.pet-description{
+    padding-top: 40px;
+    padding-left: 40px;
+    background: white;
+    border-radius: 50px 50px 0 0;
+    border-bottom: 0;
+    box-shadow: 1px 0px 12px 4px rgba(0,0,0,0.15);
+    padding-bottom: 20px;
+}
+
+.pet-description h2{
+    font-size: 30px;
+    font-family: 'Inknut Antiqua', serif;
+    font-weight: 600;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.pet-description p{
+    font-size: 18px;
+    line-height: 1.6;
+    width: 45%;
+    margin-bottom: 20px;
+}
+.btn-wrapper{
+    width: 45%;
+    display: flex;
+    justify-content: space-between;
+}
+.btn-wrapper .btn{
+    background-color: #DFAE00;
+    color: black;
+    font-size: 18px;
+    font-weight: 600;
+}
