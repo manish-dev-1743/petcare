@@ -63,7 +63,7 @@
                         </div>
 
                         <div class="allies-account">
-                            Are you a shelter, rescue group,organisation?<br> Join  <a href="allies.html">AdoptableAllies</a> now!
+                            Are you a shelter, rescue group,organisation?<br> Join  <a href="/register/allies">AdoptableAllies</a> now!
                         </div>
                     </div>
                 </div>

@@ -39,7 +39,7 @@
                             Password
                         </label>
                         <div class="input-container">
-                            <input name="password" type="text" class="form-control">
+                            <input name="password" type="password" class="form-control">
                             <i class="fa-solid fa-lock"></i>
                         </div>
                     </div>

@@ -7,7 +7,7 @@ class UserModel extends Model
 {
     protected $table = 'user';
 
-    protected $allowedFields = ['name', 'email','phone', 'password','type','token','status','expiry_date','created_at','updated_at'];
+    protected $allowedFields = ['name', 'email','phone','documents', 'password','type','token','status','expiry_date','created_at','updated_at'];
 
     public function add($data){
         return $this->insert($data);
