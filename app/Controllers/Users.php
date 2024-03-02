@@ -113,12 +113,14 @@ class Users extends BaseController
         $cart = new CartModel();
         $cart_exists = $cart->where(['product_id'=>$product_id,'user_id'=>$user_id])->first();
         if($cart_exists){
-            echo json_encode(array('status'=>200,'message'=>'Already in Cart.'));
+            $quantity = (int) $request->getPost('quantity')?$request->getPost('quantity'):1;
+            $cart_exists['quantity'] += $quantity;
+            $cart->update($cart_exists['id'],$cart_exists);
         }else{
             $quantity = $request->getPost('quantity')?$request->getPost('quantity'):1;
             $cart->insert(array('product_id'=>$product_id,'user_id'=>$user_id,'quantity'=>$quantity));
-            echo json_encode(array('status'=>200,'message'=>'Successfully added to Cart.'));
         }
+        echo json_encode(array('status'=>200,'message'=>'Successfully added to Cart.'));
         die;
     }
 
