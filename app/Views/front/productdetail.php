@@ -24,7 +24,7 @@
                                     <div class="decrement">-</div>
                                 </div>
                                 <div class="button-wrapper">
-                                    <a href="#" class="btn addcart">Add to cart</a>
+                                    <a href="#" data-product="<?= $product['id'];  ?>" class="btn addcart">Add to cart</a>
                                 </div>
                             </div>
                         </div>
