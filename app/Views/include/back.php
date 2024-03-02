@@ -34,6 +34,27 @@
             padding: 2px;
 
         }
+        .documenet-wrapper .figure{
+            display: inline-block;
+            width: 45%;
+            height: 300px;
+            overflow: hidden;
+            margin-left: 20px;
+            position: relative;
+        }
+        .documenet-wrapper .figure img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .documenet-wrapper .figure a{
+            position: absolute;
+            top: 0px;
+            right: 6px;
+            color: red;
+            z-index: 5;
+            font-size: 30px;
+        }
     </style>
     <?= $this->renderSection('style'); ?>
 
@@ -94,26 +115,25 @@
             <div class="sidebar">
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <li class="nav-item">
-                           
-                            <a href="/admin/dashboard" class="nav-link <?= (getUrlSegment(1)=='dashboard')?'active':'' ?>">
-                                <i class="nav-icon fas fa-th"></i>
-                                <p>
-                                    Dashboard
-                                </p>
-                            </a>
-                        </li>
                         <?php if( $user->type == 0 ):?>
-                        <li class="nav-item">
-                            <a href="/admin/pets" class="nav-link <?= (getUrlSegment(1) == 'pets')?'active':'' ?>">
-                                <i class="nav-icon fa-solid fa-paw"></i>
-                                <p>
-                                    Pet Category
-                                </p>
-                            </a>
-                        </li>
+                            <li class="nav-item">    
+                                <a href="/admin/dashboard" class="nav-link <?= (getUrlSegment(1)=='dashboard')?'active':'' ?>">
+                                    <i class="nav-icon fas fa-th"></i>
+                                    <p>
+                                        Dashboard
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/admin/pets" class="nav-link <?= (getUrlSegment(1) == 'pets')?'active':'' ?>">
+                                    <i class="nav-icon fa-solid fa-paw"></i>
+                                    <p>
+                                        Pet Category
+                                    </p>
+                                </a>
+                            </li>
                         <?php endif ?>
-
+                        <?php if( $user->type != 1 ):?>
                         <li class="nav-item">
                             <a href="/admin/pet-lists" class="nav-link <?= (getUrlSegment(1) == 'pet-lists')?'active':'' ?>">
                                 <i class="nav-icon fa-solid fa-cat"></i>
@@ -122,7 +142,7 @@
                                 </p>
                             </a>
                         </li>
-
+                        
                         <li class="nav-item">
                             <a href="/admin/product/lists" class="nav-link <?= (getUrlSegment(1) == 'product')?'active':'' ?>">
                                 <i class="nav-icon fa fa-product-hunt""></i>
@@ -131,7 +151,23 @@
                                 </p>
                             </a>
                         </li>
-
+                        <?php endif ?>
+                        <li class="nav-item">
+                            <a href="/profile" class="nav-link <?= (getUrlSegment(0) == 'profile')?'active':'' ?>">
+                                <i class="nav-icon fa fa-user""></i>
+                                <p>
+                                    Profile
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/my-cart" class="nav-link <?= (getUrlSegment(0) == 'my-cart')?'active':'' ?>">
+                                <i class="nav-icon fa fa-shopping-cart""></i>
+                                <p>
+                                    My Cart
+                                </p>
+                            </a>
+                        </li>
                     </ul>
                     
                 </nav>

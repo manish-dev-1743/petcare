@@ -64,7 +64,7 @@
                                                 Rs. <?= $prod['price']; ?>
                                             </div>
                                             <div class="cart-btn">
-                                            <button class="btn btn-success"><img src="/assets/images/shopping-cart.png"> </button>
+                                            <button class="btn btn-success addcart" data-product="<?= $prod['id']; ?>"><img src="/assets/images/shopping-cart.png"> </button>
                                             </div>
                                         </div>
                                     </div>
@@ -109,6 +109,22 @@
                     slidesPerView: 3,
                     },
                 },
+            });
+            $('.addcart').on('click',function(){
+                $.ajax({
+                    url : '/cart/add',
+                    type : 'POST',
+                    data : {
+                        product_id:$(this).attr('data-product')
+                    },
+                    success : function(res){
+                        res = JSON.parse(res);
+                        if(res.status == 200){
+                            alert(res.message);
+                        }
+                    }
+                });
+    
             });
         </script>
 

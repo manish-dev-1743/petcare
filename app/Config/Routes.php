@@ -40,3 +40,13 @@ $routes->get('product/(:num)','Home::productdetail/$1');
 
 
 $routes->get('logout','Home::logout');
+
+$routes->get('profile','Users::profile');
+$routes->get('delete/document','Allies::deletedoc');
+
+$routes->post('user/profile/update','Users::updateProfile');
+$routes->post('user/changePass','Users::changeuserpass');
+
+$routes->post('cart/add','Users::addtocart');
+$routes->get('my-cart','Users::mycart');
+$routes->get('delete/cart/(:num)','Users::deletecart/$1');

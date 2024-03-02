@@ -24,7 +24,7 @@
                                     <div class="decrement">-</div>
                                 </div>
                                 <div class="button-wrapper">
-                                    <a href="#" class="btn">Add to cart</a>
+                                    <a href="#" class="btn addcart">Add to cart</a>
                                 </div>
                             </div>
                         </div>
@@ -42,6 +42,12 @@
                     quantity = parseInt(quantity);
                     quantity = quantity + 1;
                     document.querySelector('.quantitiy').innerHTML = quantity;
+                    if(quantity == <?= $product['quantity']; ?>){
+                        document.querySelector('.increment').classList.add('disabled');
+                    }else{
+                        document.querySelector('.increment').classList.remove('disabled');
+                    }
+
                 });
                 document.querySelector('.decrement').addEventListener('click',()=>{
                     let quantity = document.querySelector('.quantitiy').innerHTML;
@@ -51,6 +57,23 @@
                         document.querySelector('.quantitiy').innerHTML = quantity;
                     }
                 });
+            });
+            $('.addcart').on('click',function(){
+                $.ajax({
+                    url : '/cart/add',
+                    type : 'POST',
+                    data : {
+                        product_id:$(this).attr('data-product'),
+                        quantity : $('.quantitiy').innerHTML
+                    },
+                    success : function(res){
+                        res = JSON.parse(res);
+                        if(res.status == 200){
+                            alert(res.message);
+                        }
+                    }
+                });
+    
             });
         </script>
     <?= $this->endSection(); ?> 

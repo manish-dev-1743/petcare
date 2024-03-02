@@ -193,7 +193,7 @@ class Home extends BaseController
                 if($data->type == '0'){
                     return redirect()->to('/admin/dashboard');
                 }else if($data->type == '1'){
-                    return redirect()->to('/');
+                    return redirect()->to('/profile');
                 }else if($data->type == '2'){
                     return redirect()->to('/allies/dashboard');
                 }

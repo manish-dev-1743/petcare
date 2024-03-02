@@ -6,6 +6,7 @@ use App\Models\PetModel;
 use App\Models\AnimalModel;
 use App\Models\AnimalImageModel;
 use App\Models\PetProductsModel;
+use App\Models\UserModel;
 use CodeIgniter\HTTP\Request;
 
 class Allies extends BaseController
@@ -254,6 +255,29 @@ class Allies extends BaseController
         $pet->where('id',$id)->delete();
         
         return redirect()->to('admin/product/lists')->with('success','Successfull Deleted Product.');
+    }
+
+    public function deletedoc(){
+        $user_id = $this->curr_user->id;
+        $user = new UserModel();
+        $user_details = $user->where('id',$user_id)->first();
+        $document = $user_details['documents'];
+        $path = (isset($_GET['path']))?$_GET['path']:'';
+       
+        if($document != NULL && $document != '[]' && $document != ''){
+       
+            $document = json_decode($document);
+            if(in_array($path,$document) !== false){
+                @unlink('./'.$path);
+                unset($document[array_search($path,$document)]);
+                $user_details['documents'] = json_encode($document);
+
+                $user->update($user_id,$user_details);
+            }else{
+                return redirect()->back()->with('errors', 'Image Not Found');
+            }
+        }
+        return redirect()->back()->with('success', 'Image Successfully deleted');
     }
 
 }

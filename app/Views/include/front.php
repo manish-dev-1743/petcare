@@ -10,6 +10,11 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="/assets/css/style.css">
+        <style>
+            .disabled{
+                pointer-events: none !important;
+            }
+        </style>
     </head>
     <body>
         <!-- Header -->
@@ -20,7 +25,7 @@
                     <h2 class="company-name">Adoptable Allies</h2>
                     </a>
                     <div class="d-flex justify-content-between icons">
-                        <img src="/assets/images/shopping-cart.png">
+                    <a href="/my-cart"><img src="/assets/images/shopping-cart.png"></a>
                         <a href="/login"><img src="/assets/images/profile.png"></a>
                         <img src="/assets/images/notification.png">
                     </div>
