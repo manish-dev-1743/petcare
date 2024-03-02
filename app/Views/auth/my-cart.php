@@ -79,14 +79,13 @@
                         <div class="sub-total d-flex justify-content-between align-items-center">
                             <h4>Shipping</h4>
                             <div class="shipping-content">
-                                <h6>Flat Rate : <strong>Rs 100</strong></h6>
                                 <h6>Shipping to <strong>Bagmati</strong></h6>
                                 <h6 style="color: red;">Change Address</h6>
                             </div>
                         </div>
                         <div class="sub-total d-flex justify-content-between align-items-center">
                             <h4>Total</h4>
-                            <div class="amount">Rs. <?= ($total_amt+100); ?></div>
+                            <div class="amount">Rs. <?= ($total_amt); ?></div>
                         </div>
                     </div>
                     <div class="checkout-payment mt-3">
