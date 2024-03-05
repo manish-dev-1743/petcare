@@ -133,7 +133,7 @@
                                 </a>
                             </li>
                         <?php endif ?>
-                        <?php if( $user->type != 1 ):?>
+                        <?php if( $user->type == 2 ):?>
                         <li class="nav-item">
                             <a href="/admin/pet-lists" class="nav-link <?= (getUrlSegment(1) == 'pet-lists')?'active':'' ?>">
                                 <i class="nav-icon fa-solid fa-cat"></i>
@@ -145,7 +145,7 @@
                         
                         <li class="nav-item">
                             <a href="/admin/product/lists" class="nav-link <?= (getUrlSegment(1) == 'product')?'active':'' ?>">
-                                <i class="nav-icon fa fa-product-hunt""></i>
+                                <i class="nav-icon fa fa-product-hunt"></i>
                                 <p>
                                     Products
                                 </p>
@@ -154,20 +154,30 @@
                         <?php endif ?>
                         <li class="nav-item">
                             <a href="/profile" class="nav-link <?= (getUrlSegment(0) == 'profile')?'active':'' ?>">
-                                <i class="nav-icon fa fa-user""></i>
+                                <i class="nav-icon fa fa-user"></i>
                                 <p>
                                     Profile
                                 </p>
                             </a>
                         </li>
+                        <?php if( $user->type == 1 ):?>
                         <li class="nav-item">
                             <a href="/my-cart" class="nav-link <?= (getUrlSegment(0) == 'my-cart')?'active':'' ?>">
-                                <i class="nav-icon fa fa-shopping-cart""></i>
+                                <i class="nav-icon fa fa-shopping-cart"></i>
                                 <p>
                                     My Cart
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="/my-order" class="nav-link <?= (getUrlSegment(0) == 'my-order')?'active':'' ?>">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                                <p>
+                                    My Order
+                                </p>
+                            </a>
+                        </li>
+                        <?php endif ?>
                     </ul>
                     
                 </nav>

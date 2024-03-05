@@ -50,3 +50,9 @@ $routes->post('user/changePass','Users::changeuserpass');
 $routes->post('cart/add','Users::addtocart');
 $routes->get('my-cart','Users::mycart');
 $routes->get('delete/cart/(:num)','Users::deletecart/$1');
+
+$routes->post('proceed/payment','Users::proceedpayment');
+
+$routes->get('payment/success','Users::paymentsuccess');
+
+$routes->get('my-order','Users::myorder');

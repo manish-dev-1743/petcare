@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\CartModel;
+use App\Models\MyOrderModel;
+use App\Models\PaymentsModel;
 use App\Models\PetProductsModel;
 use App\Models\UserModel;
 
@@ -106,23 +108,26 @@ class Users extends BaseController
     }
 
     public function addtocart(){
-        $request = service('request');
+        if($this->curr_user->type == 1){
+            $request = service('request');
+            $product_id = $request->getPost('product_id');  
+            $user_id = $this->curr_user->id;
+            $cart = new CartModel();
+            $cart_exists = $cart->where(['product_id'=>$product_id,'user_id'=>$user_id])->first();
+            if($cart_exists){
+                $quantity = (int) $request->getPost('quantity')?$request->getPost('quantity'):1;
+                $cart_id = (int) $cart_exists['id'];
+                $updated_quantity = (int) $cart_exists['quantity'] + $quantity;
 
-        $product_id = $request->getPost('product_id');  
-        $user_id = $this->curr_user->id;
-        $cart = new CartModel();
-        $cart_exists = $cart->where(['product_id'=>$product_id,'user_id'=>$user_id])->first();
-        if($cart_exists){
-            $quantity = (int) $request->getPost('quantity')?$request->getPost('quantity'):1;
-            $cart_id = (int) $cart_exists['id'];
-            $updated_quantity = (int) $cart_exists['quantity'] + $quantity;
-
-            $cart->update($cart_id,['quantity' => $updated_quantity]);
+                $cart->update($cart_id,['quantity' => $updated_quantity]);
+            }else{
+                $quantity = $request->getPost('quantity')?$request->getPost('quantity'):1;
+                $cart->insert(array('product_id'=>$product_id,'user_id'=>$user_id,'quantity'=>$quantity));
+            }
+            echo json_encode(array('status'=>200,'message'=>'Successfully added to Cart.'));
         }else{
-            $quantity = $request->getPost('quantity')?$request->getPost('quantity'):1;
-            $cart->insert(array('product_id'=>$product_id,'user_id'=>$user_id,'quantity'=>$quantity));
+            echo json_encode(array('status'=>200,'message'=>'Please Login as User.'));
         }
-        echo json_encode(array('status'=>200,'message'=>'Successfully added to Cart.'));
         die;
     }
 
@@ -149,5 +154,183 @@ class Users extends BaseController
             return redirect()->back()->with('success', 'Successfully Deleted from cart.');   
         }
         return redirect()->back()->with('error', 'Unable to delete from cart');   
+    }
+
+    public function proceedpayment(){
+        $request = service('request');
+        $postData = $request->getPost();
+        $generated_uuid = $this->generateUUID();
+        $product_code = 'PRODUCT_'.time();
+        $generated_signature = $this->generateSignatiure($postData['amount'],$generated_uuid);
+        if(!empty($postData)){
+            $data = array(
+                'user_id' => $this->curr_user->id,
+                'cart_ids' => $postData['cart_ids'],
+                'location' => $postData['location'],
+                'payment_type' => $postData['payment_type'],
+                'payment_status' => 0,
+                'amount' => $postData['amount'],
+                'uuid' => $generated_uuid,
+                'signature' => $generated_signature,
+               
+            );
+            $payments = new PaymentsModel();
+            $payments->insert($data);
+            if($postData['payment_type'] == 'esewa'){
+                $this->esewaPayment($postData['amount'],$generated_signature,$generated_uuid);
+            }else{
+                $this->cashondelivery($postData);
+                return redirect()->to('/')->with('success', 'Successfully placed Orders.');
+            }
+        }
+    }
+
+    public function paymentsuccess(){
+        $token = (isset($_GET['data']) && $_GET['data'] != '')?$_GET['data']:false;
+        if($token){
+            $payload = json_decode(base64_decode($token));
+
+            $payments = new PaymentsModel();
+            $payments_details = $payments->where('uuid',$payload->transaction_uuid)->first();
+            if($payments_details){
+                $res = file_get_contents('https://uat.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount='.intval($payments_details['amount']).'&transaction_uuid='.$payload->transaction_uuid);
+                $res = json_decode($res);
+                if($res->status = 'COMPLETE'){
+                    
+                    $payments->update($payments_details['id'],['payment_status' => 1]);
+
+                    $cart_ids = explode(',',$payments_details['cart_ids']);
+                    $quantity = array();
+                    $product_ids = array();
+                    $cart = new CartModel();
+                    $product = new PetProductsModel();
+                    foreach($cart_ids as $cid){
+                        $carts = $cart->where('id',$cid)->first();
+                        $product_ids[] = $carts['product_id'];
+                        $q = $carts['quantity'];
+                        $prod = $product->where('id',$carts['product_id'])->first();
+                        $new_q = $prod['quantity'] - $q;
+                        $product->update($carts['product_id'],['quantity'=>$new_q]);
+                        $quantity[] = $q;
+                        $cart->where('id',$cid)->delete();
+                    }
+
+                    $data = array(
+                        'user_id' => $this->curr_user->id,
+                        'product_ids' => implode(',',$product_ids),
+                        'quantity' => implode(',',$quantity),
+                        'amount' => $payments_details['amount'],
+                        'is_paid' => 1,
+                        'delivery_date' => date('Y-m-d H:i:s',strtotime('+7 days'))
+                    );
+                    $order = new MyOrderModel();
+                    $order-> insert($data);
+                }
+            }
+            
+        }
+        return redirect()->to('/')->with('success', 'Successfully placed Orders.');    
+    }
+
+    protected function cashondelivery($postData){
+        $cart_ids = explode(',',$postData['cart_ids']);
+        $quantity = array();
+        $product_ids = array();
+        $cart = new CartModel();
+        $product = new PetProductsModel();
+        foreach($cart_ids as $cid){
+            $carts = $cart->where('id',$cid)->first();
+            $product_ids[] = $carts['product_id'];
+            $q = $carts['quantity'];
+            $prod = $product->where('id',$carts['product_id'])->first();
+            $new_q = $prod['quantity'] - $q;
+            $product->update($carts['product_id'],['quantity'=>$new_q]);
+            $quantity[] = $q;
+            $cart->where('id',$cid)->delete();
+        }
+        $data = array(
+            'user_id' => $this->curr_user->id,
+            'product_ids' => implode(',',$product_ids),
+            'quantity' => implode(',',$quantity),
+            'amount' => $postData['amount'],
+            'is_paid' => 0,
+            'delivery_date' => date('Y-m-d H:i:s',strtotime('+7 days'))
+        );
+        $order = new MyOrderModel();
+        $order-> insert($data);  
+    }
+
+    protected function generateUUID(){
+        return 'EPAY_'.time();
+    }
+
+    protected function generateSignatiure($amt,$uid){
+        $message = 'total_amount='.$amt.',transaction_uuid='.$uid.',product_code=EPAYTEST';
+        $secret = '8gBm/:&EnhH.1/q';
+        $s = hash_hmac('sha256', "$message", "$secret", true);
+        return base64_encode($s);
+    }
+
+    protected function esewaPayment($amount,$signature,$uuid){
+        // Set the URL for the cURL request
+        $url = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+        // Set the form data
+        $formData = [
+            'amount' => intval($amount),
+            'tax_amount' => 0,
+            'total_amount' => intval($amount),
+            'transaction_uuid' => $uuid,
+            'product_code' => 'EPAYTEST',
+            'product_service_charge' => 0,
+            'product_delivery_charge' => 0,
+            'success_url' => base_url('payment/success'),
+            'failure_url' => base_url('payment/success'),
+            'signed_field_names' => 'total_amount,transaction_uuid,product_code',
+            'signature' => $signature,
+            'secret' => '8gBm/:&EnhH.1/q'
+        ];
+
+
+        // Initialize cURL session
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $formData);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $redirect_url = null;
+        if ($response) {
+            list($headers, $body) = explode("\r\n\r\n", $response, 2);
+            $exploded_body = explode("\r\n", $body);
+            foreach ($exploded_body as $item) {
+                if (strpos($item, "Location:") !== false) {
+                    $redirect_url = $item;
+                }
+            }
+            if($redirect_url){
+                header($redirect_url);
+                die;
+            }
+        }
+    }
+
+    public function myorder(){
+        if($this->curr_user->type == 1){
+            $myorder = new MyOrderModel();
+            $myorder_list= $myorder->where('user_id',$this->curr_user->id)->find();
+            $product = new PetProductsModel();
+            foreach($myorder_list as &$mol){
+                $products = $product->whereIn('id',explode(',',$mol['product_ids']))->find();
+                $mol['products'] = $products;
+            }
+            $title = 'My Order';
+
+            return view('auth/my-order',['my_orders'=>$myorder_list,'title'=>$title,'user'=>$this->curr_user]);
+        }else{
+            return redirect()->to('/');
+        }
     }
 }
