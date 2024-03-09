@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\UserModel;
 
 use App\Libraries\Authorization;
+use App\Models\AdoptPetModel;
 use App\Models\AnimalImageModel;
 use App\Models\AnimalModel;
 use App\Models\PetModel;
@@ -13,6 +14,7 @@ class Home extends BaseController
 {
 
     protected $curr_user;
+
 
     public function __construct()
     {
@@ -295,11 +297,27 @@ class Home extends BaseController
             $images = new AnimalImageModel();
             $animal['images'] = $images->where('animal_id',$animal_id)->find();
             $title = $animal['name'];
+            $user  = new UserModel();
+            $seller = $user->where('id',$animal['creator_id'])->first();
+
+            if($this->curr_user){
+                $adpet = new AdoptPetModel();
+                $exists = $adpet->where(['user_id'=>$this->curr_user->id,'pet_id'=>$animal['id']])->first();
+                if($exists){
+                    $sent = true;
+                }else{
+                    $sent = false;
+                }
+    
+            }
         }else{
             $animal = array();
+            $seller = array();
             $title = 'NOT FOUND';
+            $sent= false;
         }
-        return view('front/petdetails',['title'=>$title,'animal'=>$animal]);
+        
+        return view('front/petdetails',['title'=>$title,'animal'=>$animal,'seller'=>$seller,'sent'=>$sent]);
     }
 
     public function productdetail($prod_id){
@@ -309,6 +327,7 @@ class Home extends BaseController
             $prodouct_details = array();
             $title = 'NOT FOUND';
         }else{
+            
             $title = $prodouct_details['title'];
         }
         return view('front/productdetail',['title'=>$title,'product'=>$prodouct_details]);

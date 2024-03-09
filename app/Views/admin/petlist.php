@@ -60,6 +60,7 @@
                     <td>
                         <a href="/admin/animal/update?id=<?= $p['id']; ?>" class="btn btn-primary">Edit</a>
                         <a href="/admin/animal/delete/<?= $p['id']; ?>" class="btn btn-danger">Delete</a>
+                        <a href="/admin/animal/adoption/<?= $p['id']; ?>" class="btn btn-secondary">Adoption Request </a>
                     </td>
                 </tr>
             <?php } ?>

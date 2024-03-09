@@ -142,7 +142,7 @@
                                 </p>
                             </a>
                         </li>
-                        
+                        <?php endif ?>
                         <li class="nav-item">
                             <a href="/admin/product/lists" class="nav-link <?= (getUrlSegment(1) == 'product')?'active':'' ?>">
                                 <i class="nav-icon fa fa-product-hunt"></i>
@@ -151,7 +151,7 @@
                                 </p>
                             </a>
                         </li>
-                        <?php endif ?>
+
                         <li class="nav-item">
                             <a href="/profile" class="nav-link <?= (getUrlSegment(0) == 'profile')?'active':'' ?>">
                                 <i class="nav-icon fa fa-user"></i>
@@ -174,6 +174,14 @@
                             <i class="fa-solid fa-bag-shopping"></i>
                                 <p>
                                     My Order
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/savedlist" class="nav-link <?= (getUrlSegment(0) == 'savedlist')?'active':'' ?>">
+                            <i class="fa-solid fa-bookmark"></i>
+                                <p>
+                                    My Saved List
                                 </p>
                             </a>
                         </li>
@@ -203,7 +211,7 @@
 
     <script src="/assets/js/jquery.min.js"></script>
 
-    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/boostrap.bundle.js"></script>
 
     <script src="/assets/js/adminlte.min.js"></script>
     <?= $this->renderSection('scripts'); ?>

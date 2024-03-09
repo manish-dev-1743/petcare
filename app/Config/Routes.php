@@ -56,3 +56,19 @@ $routes->post('proceed/payment','Users::proceedpayment');
 $routes->get('payment/success','Users::paymentsuccess');
 
 $routes->get('my-order','Users::myorder');
+
+$routes->post('save/pet','Users::savepet');
+
+$routes->post('remove/pet','Users::removepet');
+
+$routes->get('savedlist','Users::savedlist');
+
+$routes->get('delete/saved/(:num)','Users::deletesaved/$1');
+
+$routes->post('adopt/pet','Users::adoptPet');
+
+$routes->get('admin/animal/adoption/(:num)','Allies::adoptionrequest/$1');
+
+$routes->post('admin/getadoptdata/(:num)','Allies::getadoptdata/$1');
+
+$routes->post('request/approval','Allies::requestApproval');

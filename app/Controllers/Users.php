@@ -2,10 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Models\AdoptPetModel;
+use App\Models\AnimalModel;
 use App\Models\CartModel;
 use App\Models\MyOrderModel;
 use App\Models\PaymentsModel;
+use App\Models\PetModel;
 use App\Models\PetProductsModel;
+use App\Models\SaveListModel;
 use App\Models\UserModel;
 
 class Users extends BaseController
@@ -132,6 +136,10 @@ class Users extends BaseController
     }
 
     public function mycart(){
+        if($this->curr_user->type != 1){
+            return redirect()->back()->with('errors', 'Login as A User');  
+        }
+
         $user_id = $this->curr_user->id;
         $cart = new CartModel();
         $cart_lists = $cart->where('user_id',$user_id)->find();
@@ -304,7 +312,8 @@ class Users extends BaseController
         $redirect_url = null;
         if ($response) {
             list($headers, $body) = explode("\r\n\r\n", $response, 2);
-            $exploded_body = explode("\r\n", $body);
+            $data = (!empty($body))?$body:$headers;
+            $exploded_body = explode("\r\n", $data);
             foreach ($exploded_body as $item) {
                 if (strpos($item, "Location:") !== false) {
                     $redirect_url = $item;
@@ -332,5 +341,97 @@ class Users extends BaseController
         }else{
             return redirect()->to('/');
         }
+    }
+
+    public  function savepet(){
+        $request = service('request');
+
+        if($this->curr_user->type == 1){
+            $save = new SaveListModel();
+            $pet_id = $request->getPost('pet_id');
+            $exists = $save->where(['user_id'=>$this->curr_user->id,'pet_id'=>$pet_id])->first();
+            if($exists){
+                echo json_encode(array('status'=>200,'message'=>'Already added.'));
+            }else{
+                $data = array(
+                    'user_id' => $this->curr_user->id,
+                    'pet_id' => $pet_id
+                );
+                $save->insert($data);
+                echo json_encode(array('status'=>200,'message'=>'Saved to your list.'));
+            }
+
+        }else{
+            echo json_encode(array('status'=>200,'message'=>'Login as a user to save the pet.'));
+        }
+        die;
+    }
+
+    public function removepet(){
+        $request = service('request');
+
+        if($this->curr_user->type == 1){
+            $save = new SaveListModel();
+            $pet_id = $request->getPost('pet_id');
+            $exists = $save->where(['user_id'=>$this->curr_user->id,'pet_id'=>$pet_id])->first();
+            if($exists){
+                $save->where(['user_id'=>$this->curr_user->id,'pet_id'=>$pet_id])->delete();
+                echo json_encode(array('status'=>200,'message'=>'Removed from savelist.'));
+            }else{
+              
+                echo json_encode(array('status'=>200,'message'=>'Not listed in saved list.'));
+            }
+
+        }else{
+            echo json_encode(array('status'=>200,'message'=>'Login as a user to save the pet.'));
+        }
+        die;
+    }
+
+    public function savedlist(){
+        if($this->curr_user->type != 1){
+            return redirect()->to('login');
+        }
+        $saves = new SaveListModel();
+        $title = 'Saved List';
+        $my_list = $saves->where('user_id',$this->curr_user->id)->find();
+        $pets = new AnimalModel();
+        $p = new PetModel();
+        foreach($my_list as &$m){
+            $m['pet_detail'] = $pets->where('id',$m['pet_id'])->first();
+            $m['pet'] = $p->where('id',$m['pet_detail']['pet_id'])->first();
+        }
+        return view('auth/mysaved',['saved'=>$my_list,'title'=>$title,'user'=>$this->curr_user]);
+    }
+
+    public function deletesaved($pet_id){
+        if($this->curr_user->type != 1){
+            return redirect()->to('login');
+        }
+        $saved = new SaveListModel();
+
+        $saved->where('id',$pet_id)->delete();
+        
+        return redirect()->back()->with('success','Successfully removed from bookmark.');
+    }
+
+    public function adoptPet(){
+        if($this->curr_user->type != 1){
+            echo json_encode(array('status'=>200,'message'=>'Login as user to adopt the pet'));
+        }else{
+            $request = service('request');
+            $petdata = $request->getPost();
+            $adpet = new AdoptPetModel();
+            $exists = $adpet->where(['user_id'=>$this->curr_user->id,'pet_id'=>$petdata['pet_id']])->first();
+            if($exists){
+                echo json_encode(array('status'=>200,'message'=>'Alerady Sent Request.'));
+            }else{
+                $petdata['user_id'] = $this->curr_user->id;
+                $petdata['created_at'] = date('Y-m-d H:i:s');
+                $adpet->insert($petdata);
+                echo json_encode(array('status'=>200,'message'=>'Successfully sent Request for Adoption.'));
+            }
+        }
+        die;
     }
 }

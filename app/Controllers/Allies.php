@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\AdoptApprovalModel;
+use App\Models\AdoptPetModel;
 use App\Models\PetModel;
 use App\Models\AnimalModel;
 use App\Models\AnimalImageModel;
@@ -40,7 +42,7 @@ class Allies extends BaseController
 
     public function petlist(){
         $pet = new AnimalModel(); 
-        if($this->curr_user->type == 1){
+        if($this->curr_user->type == 0){
             $pet = $pet->findAll();
         }else{
             $pet = $pet->where('creator_id',$this->curr_user->id)->find();
@@ -278,6 +280,52 @@ class Allies extends BaseController
             }
         }
         return redirect()->back()->with('success', 'Image Successfully deleted');
+    }
+
+    public function adoptionrequest($animal_id){
+        $animal = new AdoptPetModel();
+        $adopt_reqs = $animal->where('pet_id',$animal_id)->find();
+        $user = new UserModel();
+        foreach($adopt_reqs as &$a){
+            $a['user_detail'] = $user->where('id',$a['user_id'])->first();
+        }
+        $pet_details = new AnimalModel();
+        $pet_details = $pet_details->where('id',$animal_id)->first();
+
+        return view('admin/adoptpet',['user'=>$this->curr_user,'adopt_req' => $adopt_reqs,'pet'=>$pet_details]);
+    }
+
+    public function getadoptdata($adopt_id){
+        $aid = new AdoptPetModel();
+
+        $aid = $aid->where('id',$adopt_id)->first();
+        $approval = new AdoptApprovalModel();
+
+        $approval_res = $approval->where('adopt_id',$adopt_id)->first();
+        if(!$approval_res){
+            $approval_res = false;
+        }
+
+        echo json_encode(array('status'=>200,'detail'=>$aid,'approval_res'=>$approval_res));
+        die;
+    }
+
+    public function requestApproval(){
+        $request = service('request');
+
+        $formData = $request->getPost();
+        $adopt_id = $formData['adopt_id'];
+        unset($formData['adopt_id']);
+        $response = json_encode($formData);
+        $data = array(
+            'adopt_id'=>$adopt_id,
+            'response' => $response
+        );
+        $approval = new AdoptApprovalModel();
+        $approval->insert($data);
+        $ad = new AdoptPetModel();
+        
+        return redirect()->back()->with('success','Successfully Approval Set');
     }
 
 }
