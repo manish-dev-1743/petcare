@@ -10,7 +10,7 @@ class AnimalModel extends Model
 {
     protected $table = 'animals';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['name','description','creator_id','status','pet_id','banner_image'];
+    protected $allowedFields = ['name','description','creator_id','status','pet_id','banner_image','age','breed','gender','size'];
 
     public function pet()
     {

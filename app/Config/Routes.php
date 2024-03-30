@@ -8,6 +8,13 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('register','Home::register');
 $routes->get('register/allies','Home::alliesregister');
+$routes->get('pet/search','Home::searchpet');
+$routes->get('blogs','Home::blogs');
+$routes->get('blog/detail/(:num)','Home::blogdetail/$1');
+
+$routes->get('about','Home::about');
+
+$routes->get('notification','Home::getNotification');
 
 $routes->post('allies-signup','Home::alliessignup');
 $routes->post('signup','Home::signup');
@@ -22,16 +29,23 @@ $routes->get('admin/pets/update','Admin::petsdata');
 $routes->post('admin/pets/doupdate','Admin::dopetupdate');
 $routes->get('admin/pets/delete','Admin::deletePet');
 
+$routes->get('admin/donations','Admin::donationList');
+
 $routes->get('admin/pet-lists','Allies::petlist');
 $routes->get('admin/animal/update','Allies::animaldata');
 $routes->post('admin/animals/doupdate','Allies::doanimalupdate');
 $routes->get('admin/animals/image/(:num)','Allies::deleteanimalimg/$1');
 $routes->get('admin/animal/delete/(:num)','Allies::deleteanimal/$1');
 
-$routes->get('admin/product/lists','Allies::productlist');
-$routes->get('admin/product/update','Allies::productdata');
-$routes->post('admin/product/doupdate','Allies::doproductupdate');
-$routes->get('admin/product/delete/(:num)','Allies::deleteproduct/$1');
+$routes->get('admin/product/lists','Admin::productlist');
+$routes->get('admin/product/update','Admin::productdata');
+$routes->post('admin/product/doupdate','Admin::doproductupdate');
+$routes->get('admin/product/delete/(:num)','Admin::deleteproduct/$1');
+
+$routes->get('admin/blog/lists','Admin::bloglist');
+$routes->get('admin/blog/update','Admin::blogdata');
+$routes->post('admin/blog/doupdate','Admin::doblogupdate');
+$routes->get('admin/blog/delete/(:num)','Admin::deleteblog/$1');
 
 $routes->get('pets/(:any)/(:num)','Home::petdata/$1/$2');
 $routes->get('pet/(:any)','Home::petcat/$1');
@@ -65,6 +79,8 @@ $routes->get('savedlist','Users::savedlist');
 
 $routes->get('delete/saved/(:num)','Users::deletesaved/$1');
 
+$routes->get('adoptionresponse','Users::adoptionresponse');
+
 $routes->post('adopt/pet','Users::adoptPet');
 
 $routes->get('admin/animal/adoption/(:num)','Allies::adoptionrequest/$1');
@@ -72,3 +88,8 @@ $routes->get('admin/animal/adoption/(:num)','Allies::adoptionrequest/$1');
 $routes->post('admin/getadoptdata/(:num)','Allies::getadoptdata/$1');
 
 $routes->post('request/approval','Allies::requestApproval');
+
+$routes->post('donate-now','Home::donateNow');
+
+
+$routes->get('donation/success','Home::donationsuccess');

@@ -10,15 +10,22 @@
                 <h2>ADOPT US.<br>WE NEED YOUR HELP</h2>
                 <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod temp or incididunt ut labore et dolore magna aliqua. Ut enim ad minim.<br>
-                    <a href="about.html">Read more</a>
+                    <a href="/about">Read more</a>
 
                 </p>
-                <form action="#">
+                <form action="/pet/search" method="get">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search for a pet to adopt....">
+                        <input type="text" class="form-control" name="petname" placeholder="Search for a pet to adopt....">
                         <div class="form-icons d-flex justify-content-between">
                             <img src="assets/images/search.png" class="search-btn">
-                            <img src="assets/images/filter.png" class="filter-btn">
+                            <img src="assets/images/filter.png" class="filter-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="dropdown-menu">
+                                <?php foreach($category as $cat){?>
+                                    <div class="dropdown-item">
+                                        <label for="<?php echo $cat['slug']; ?>"><input type="checkbox" value="<?php echo $cat['id']; ?>" name="pet[]" id="<?php echo $cat['slug']; ?>">&nbsp;<?php echo $cat['name']; ?></label>
+                                    </div>
+                                <?php } ?>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -85,7 +92,43 @@
             <div class="inner-text">
                 <h2>Help us help them.</h2>
                 <p>Donate for a better life of animals.</p>
-                <a href="#" class="btn">Donate Now</a>
+                <a class="btn" data-toggle="modal" data-target="#donationModal">Donate Now</a>
+            </div>
+        </div>
+        <div class="modal fade" id="donationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Donation Form</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="/donate-now" method="POST">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" name="email" id="email" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="number">Number</label>
+                                <input type="text" name="number" id="number" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="amount">Amount</label>
+                                <input type="text" name="amount" id="amount" class="form-control">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Donate via Esewa</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     

@@ -132,6 +132,30 @@
                                     </p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="/admin/donations" class="nav-link <?= (getUrlSegment(1) == 'donations')?'active':'' ?>">
+                                    <i class="nav-icon fa fa-donate"></i>
+                                    <p>
+                                        Donations
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/admin/product/lists" class="nav-link <?= (getUrlSegment(1) == 'product')?'active':'' ?>">
+                                    <i class="nav-icon fa fa-product-hunt"></i>
+                                    <p>
+                                        Products
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/admin/blog/lists" class="nav-link <?= (getUrlSegment(1) == 'blog')?'active':'' ?>">
+                                    <i class="nav-icon fa fa-blog"></i>
+                                    <p>
+                                        Blogs
+                                    </p>
+                                </a>
+                            </li>
                         <?php endif ?>
                         <?php if( $user->type == 2 ):?>
                         <li class="nav-item">
@@ -143,15 +167,6 @@
                             </a>
                         </li>
                         <?php endif ?>
-                        <li class="nav-item">
-                            <a href="/admin/product/lists" class="nav-link <?= (getUrlSegment(1) == 'product')?'active':'' ?>">
-                                <i class="nav-icon fa fa-product-hunt"></i>
-                                <p>
-                                    Products
-                                </p>
-                            </a>
-                        </li>
-
                         <li class="nav-item">
                             <a href="/profile" class="nav-link <?= (getUrlSegment(0) == 'profile')?'active':'' ?>">
                                 <i class="nav-icon fa fa-user"></i>
@@ -182,6 +197,15 @@
                             <i class="fa-solid fa-bookmark"></i>
                                 <p>
                                     My Saved List
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/adoptionresponse" class="nav-link <?= (getUrlSegment(0) == 'adoptionresponse')?'active':'' ?>">
+                            <i class="fa-solid fa-bookmark"></i>
+                                <p>
+                                    My Adoption Requests
                                 </p>
                             </a>
                         </li>

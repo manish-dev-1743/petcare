@@ -75,6 +75,29 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="cat-breed">Breed</label>
+                        <input type="text" class="form-control" name="breed" id="cat-breed" value="<?= @$animal['breed']; ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cat-age">Age</label>
+                        <input type="text" class="form-control" name="age" id="cat-age" value="<?= @$animal['age']; ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cat-gender">Gender</label>
+                        <select class="form-control" name="gender" id="cat-gender">
+                            <option value="Male" <?= (isset($animal['gender']) && $animal['gender'] == 'Male')?'selected':''; ?> >Male</option>
+                            <option value="Female" <?= (isset($animal['gender']) && $animal['gender'] == 'Female')?'selected':''; ?> >Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cat-size">Size</label>
+                        <input type="text" class="form-control" name="size" id="cat-size" value="<?= @$animal['size']; ?>">
+                    </div>
+
+                    <div class="form-group">
                         <label for="cat-slug">Pet Category</label>
                         <select class="form-control" name="pet_id">
                             <?php foreach($pet_cat as $pc){ ?>

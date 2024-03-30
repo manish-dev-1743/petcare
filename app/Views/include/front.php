@@ -24,20 +24,20 @@
                     <a style="text-decoration: none;" href="/">
                     <h2 class="company-name">Adoptable Allies</h2>
                     </a>
-                    <div class="d-flex justify-content-between icons">
-                    <a href="/my-cart"><img src="/assets/images/shopping-cart.png"></a>
+                    <div class="d-flex justify-content-between icons" style="gap: 10px;">
+                        <a href="/blogs" style="text-decoration: none;color:white;">Blogs</a>
+                        <a href="/my-cart"><img src="/assets/images/shopping-cart.png"></a>
                         <a href="/login"><img src="/assets/images/profile.png"></a>
-                        <img src="/assets/images/notification.png">
+                        <img src="/assets/images/notification.png" id="notifbtn" style="cursor: pointer;"  class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="dropdown-menu" id="dropdown-menu" style="width: 166px;height:300px;">
+                            
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
         <?= $this->renderSection('content'); ?>
-
-
-
 
         <footer>
             <div class="container">
@@ -77,10 +77,44 @@
 
         
     </body>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
     <script src="/assets/js/bootstrap.min.js" async defer></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
     <?= $this->renderSection('scripts'); ?>
+
+    <script>
+        $('#notifbtn').on('click',function(){
+            getNotification();
+        });
+
+        function getNotification(){
+            $.ajax({
+                url:'/notification',
+                method:'get',
+                success:function(res){
+                    res = JSON.parse(res);
+                    if(res.status == 400){
+                        event.preventDefault();
+                        alert(res.message);
+                        window.location.href='/login';
+                    }else{
+                        data = res.data;
+                        html = '';
+                        $.each(data,function(index,value){
+                            html += '<div class="dropdown-item" style="white-space:normal;padding-bottom:10px;border-bottom:1px solid #e9e9e9;text-decoration:none;">';
+                            html += '<a href="/'+value.link+'">'+value.message+'</a>';
+                            html += '</div>';
+                        });
+                        if(html == ''){
+                            html = 'No notification found';
+                        }
+                        $('#dropdown-menu').html(html);
+                    }
+                }
+            });
+        }
+    </script>
 
 
 </html>

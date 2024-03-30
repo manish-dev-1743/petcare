@@ -83,6 +83,18 @@
     left: 92%;
     width: 55px;
     transform: translate(-50%,-50%);
+    z-index: 9;
+    cursor: pointer;
+}
+.dropdown-item{
+    cursor: pointer;
+}
+.dropdown-menu{
+    max-height: 150px;
+    overflow-y: scroll;
+}
+.dropdown-item label{
+    margin: 0;
 }
 .category-wrap{
     position: relative;

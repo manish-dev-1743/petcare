@@ -2,10 +2,12 @@
 
 namespace App\Controllers;
 
+use App\Models\AdoptApprovalModel;
 use App\Models\AdoptPetModel;
 use App\Models\AnimalModel;
 use App\Models\CartModel;
 use App\Models\MyOrderModel;
+use App\Models\NotificationModel;
 use App\Models\PaymentsModel;
 use App\Models\PetModel;
 use App\Models\PetProductsModel;
@@ -51,27 +53,29 @@ class Users extends BaseController
         $images = $this->request->getFiles();
         $documents = ($user_details['documents'] != NULL && $user_details['documents'] != '')?$user_details['documents']:'[]';
         $documents = json_decode($documents);
-        foreach ($images['documents'] as $img) {
-            if ($img->isValid() && !$img->hasMoved()) {
-                $path = 'assets/images/allies/';
-        
-                if (!is_dir($path)) {
-                    mkdir($path, 0777, true);
+        if(isset($images['documents'])){
+            foreach ($images['documents'] as $img) {
+                if ($img->isValid() && !$img->hasMoved()) {
+                    $path = 'assets/images/allies/';
+            
+                    if (!is_dir($path)) {
+                        mkdir($path, 0777, true);
+                    }
+            
+                    // Use getClientFilename() to get the original file name
+                    $newName = $img->getClientName();
+            
+                    // If you still want to use getRandomName(), you can do so
+                    // $newName = $img->getRandomName();
+            
+                    $imagePath = $path . $newName;
+            
+                    // Move the file only if it hasn't been moved
+                    $img->move($path, $newName);
+                    
+                    array_push($documents,$imagePath);
                 }
-        
-                // Use getClientFilename() to get the original file name
-                $newName = $img->getClientName();
-        
-                // If you still want to use getRandomName(), you can do so
-                // $newName = $img->getRandomName();
-        
-                $imagePath = $path . $newName;
-        
-                // Move the file only if it hasn't been moved
-                $img->move($path, $newName);
-                
-                array_push($documents,$imagePath);
-            }
+            } 
         }
         
         $user_details['documents'] = json_encode($documents);
@@ -429,9 +433,47 @@ class Users extends BaseController
                 $petdata['user_id'] = $this->curr_user->id;
                 $petdata['created_at'] = date('Y-m-d H:i:s');
                 $adpet->insert($petdata);
+
+
+
+                $notdata = array(
+                    'type' => 'adopt_pet',
+                    'uniq_id' => $petdata['pet_id'],
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'seen' => 0
+                );
+
+                $animal = new AnimalModel();
+                $animal = $animal->where('id',$petdata['pet_id'])->first();
+
+                $notdata['user_id'] = $animal['creator_id'];
+    
+                $notification_model = new NotificationModel();
+                $notification_model->insert($notdata);
+                
                 echo json_encode(array('status'=>200,'message'=>'Successfully sent Request for Adoption.'));
             }
         }
         die;
+    }
+
+    public function adoptionresponse(){
+        $adoption_list = new AdoptPetModel();
+        $adoption_list = $adoption_list->where('user_id',$this->curr_user->id)->findAll();
+        
+        $l_id = array();
+        foreach($adoption_list as $al){
+            $l_id[] = $al['id'];
+        }
+
+        $response = new AdoptApprovalModel();
+        $response = $response->whereIn('id',$l_id)->findAll();
+        $res = array();
+        foreach($response as $r){
+            $res[$r['adopt_id']] = $r;
+
+        }
+        
+        return view('auth/adoptprocess',['al'=>$adoption_list,'rl'=>$res,'title'=>'My Adoption Request','user'=>$this->curr_user]);    
     }
 }

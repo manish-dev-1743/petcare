@@ -7,8 +7,12 @@ use App\Libraries\Authorization;
 use App\Models\AdoptPetModel;
 use App\Models\AnimalImageModel;
 use App\Models\AnimalModel;
+use App\Models\BlogsModel;
+use App\Models\DonationsModel;
+use App\Models\NotificationModel;
 use App\Models\PetModel;
 use App\Models\PetProductsModel;
+use PHPUnit\Util\Json;
 
 class Home extends BaseController
 {
@@ -308,7 +312,8 @@ class Home extends BaseController
                 }else{
                     $sent = false;
                 }
-    
+            }else{
+                $sent =false;
             }
         }else{
             $animal = array();
@@ -331,5 +336,239 @@ class Home extends BaseController
             $title = $prodouct_details['title'];
         }
         return view('front/productdetail',['title'=>$title,'product'=>$prodouct_details]);
+    }
+
+    public function donateNow(){
+        
+        $request = service('request');
+        $validation = service('validation');
+
+        $validation->setRules([
+            'name' => 'required',
+            'email' => 'required',
+            'number' => 'required',
+            'amount' => 'required',
+        ]);
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+
+        $postData = $request->getPost();
+        $generated_uuid = $this->generateUUID();
+        $generated_signature = $this->generateSignatiure($postData['amount'],$generated_uuid);
+
+        if(!empty($postData)){
+            $data = array(
+                'name' => $postData['name'],
+                'email' => $postData['email'],
+                'phone' => $postData['number'],
+                'payment_status' => 0,
+                'amount' => $postData['amount'],
+                'uuid' => $generated_uuid,
+                'signature' => $generated_signature,
+               
+            );
+            $payments = new DonationsModel();
+            $payments->insert($data);       
+            $this->esewaPayment($postData['amount'],$generated_signature,$generated_uuid);
+        }
+       
+    }
+
+
+
+    protected function generateUUID(){
+        return 'DONATION_'.time();
+    }
+
+    protected function generateSignatiure($amt,$uid){
+        $message = 'total_amount='.$amt.',transaction_uuid='.$uid.',product_code=EPAYTEST';
+        $secret = '8gBm/:&EnhH.1/q';
+        $s = hash_hmac('sha256', "$message", "$secret", true);
+        return base64_encode($s);
+    }
+
+    protected function esewaPayment($amount,$signature,$uuid){
+        // Set the URL for the cURL request
+        $url = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+        // Set the form data
+        $formData = [
+            'amount' => intval($amount),
+            'tax_amount' => 0,
+            'total_amount' => intval($amount),
+            'transaction_uuid' => $uuid,
+            'product_code' => 'EPAYTEST',
+            'product_service_charge' => 0,
+            'product_delivery_charge' => 0,
+            'success_url' => base_url('donation/success'),
+            'failure_url' => base_url('donation/success'),
+            'signed_field_names' => 'total_amount,transaction_uuid,product_code',
+            'signature' => $signature,
+            'secret' => '8gBm/:&EnhH.1/q'
+        ];
+
+
+        // Initialize cURL session
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $formData);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $redirect_url = null;
+        if ($response) {
+            list($headers, $body) = explode("\r\n\r\n", $response, 2);
+            $data = (!empty($body))?$body:$headers;
+            $exploded_body = explode("\r\n", $data);
+            foreach ($exploded_body as $item) {
+                if (strpos($item, "Location:") !== false) {
+                    $redirect_url = $item;
+                }
+            }
+            if($redirect_url){
+                header($redirect_url);
+                die;
+            }
+        }
+    }
+
+    public function donationsuccess(){
+        $token = (isset($_GET['data']) && $_GET['data'] != '')?$_GET['data']:false;
+        if($token){
+            $payload = json_decode(base64_decode($token));
+
+            $payments = new DonationsModel();
+            $payments_details = $payments->where('uuid',$payload->transaction_uuid)->first();
+            if($payments_details){
+                $res = file_get_contents('https://uat.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount='.intval($payments_details['amount']).'&transaction_uuid='.$payload->transaction_uuid);
+                $res = json_decode($res);
+                if($res->status = 'COMPLETE'){
+                    
+                    $payments->update($payments_details['id'],['payment_status' => 1]);
+                }
+            }
+            
+        }
+        return redirect()->to('/')->with('success', 'Successfully made donations.');    
+    }
+
+    public function searchpet(){
+        $request = service('request');
+
+        $formData = $request->getGet();
+        
+        $petlist = new AnimalModel();
+        if(isset($formData['petname']) && $formData['petname'] != ''){
+            $petlist->like('name',$formData['petname']);
+        }
+        if(isset($formData['pet']) && !empty($formData['pet'])){ 
+            
+           $petlist->whereIn('pet_id',$formData['pet']);
+        }
+
+        if(isset($formData['age']) && !empty($formData['age'])){ 
+            $petlist->like('age',$formData['age']);
+        }
+
+        if(isset($formData['breed']) && !empty($formData['breed'])){ 
+            $petlist->like('breed',$formData['breed']);
+        }
+
+        if(isset($formData['gender']) && !empty($formData['gender'])){ 
+            $petlist->where('gender',$formData['gender']);
+        }
+
+        $list = $petlist->find();
+
+        $pet_category = new PetModel();
+        $pet_category = $pet_category->where('status',1)->findAll();
+
+        return view('front/search',['title'=>'Search Results : '.$formData['petname'],'list'=>$list,'formdata'=>$formData,'pet_category'=>$pet_category]);
+    }
+
+    public function blogs(){
+        $blog = new BlogsModel();
+
+        $count = $blog->countAllResults();
+
+        if(isset($_GET['page']) && $_GET['page'] > 1){
+            $start = $_GET['page'] + 1;
+            $end =  $_GET['page'] + 6;
+            $offset = (int) $_GET['page'] * 6;
+            $page = $_GET['page'];
+        }else{
+            $offset = 0;
+            $page = 1;
+            $start = 1;
+            $end = ($count < 6)?$count:6;
+        }
+        $blogs = $blog->orderBy('created_at','DESC')->limit(6,$offset)->find();
+
+        $pagination = array(
+            'curr_page' => $page,
+            'blog_list' => $count,
+            'pages' => ceil($count/6),
+            'start' => $start,
+            'end' => $end
+
+        );
+        return view('front/blogs',['title'=>'Blogs','list'=>$blogs,'pagination'=>$pagination]);
+    }
+
+    public function blogdetail($id){
+        $blog = new BlogsModel();
+        $blog = $blog->where('id',$id)->first();
+        return view('front/blogdetail',['title'=>$blog['title'],'blog'=>$blog]);
+    }
+
+    public function getNotification(){
+        if(session()->get('token') !== NULL){  
+            $notification = new NotificationModel();
+            $user = $this->authCheck(session()->get('token'));
+            $list = array();
+            if($user){
+                $notification_list = $notification->where('user_id',$user->id)->orderBy('created_at','DESC')->findAll();
+
+                foreach($notification_list as $nl){
+                    if($nl['type'] == 'animal_add'){
+                        $animal = new AnimalModel();
+                        $animal =$animal->where('id',$nl['uniq_id'])->first();
+                        $pet = new PetModel();
+                        $pet = $pet->where('id',$animal['pet_id'])->first();
+                        $list[] = array(
+                            'message' => $animal['breed'].", ".$animal['name']." is up for adoption.",
+                            'link' => '/pets/'.$pet['slug'].'/'.$animal['id']    
+                        );
+                    }else if($nl['type'] == 'blog_add'){
+                        $blog = new BlogsModel();
+                        $blog = $blog->where('id',$nl['uniq_id'])->first();
+                        $list[] = array(
+                            'message' => 'A new blog - ' .$blog['title'],
+                            'link' => 'blog/detail/'.$nl['uniq_id']
+                        );
+                    }else if($nl['type'] == 'adopt_pet'){
+                        $animal = new AnimalModel();
+                        $animal =$animal->where('id',$nl['uniq_id'])->first();
+
+                        $list[] = array(
+                            'message' => 'An adoption request has been sent to you for '.$animal['name'],
+                            'link' => 'admin/animal/adoption/'.$nl['uniq_id']
+                        );
+                    }
+                }
+                echo json_encode(array('status'=>200,'data'=>$list));
+            }else{
+                echo json_encode(array('status'=>400,'message'=>'login required'));
+            }
+        }else{
+            echo json_encode(array('status'=>400,'message'=>'login required'));
+        }
+    }
+
+    public function about(){
+        return view('front/about',['title'=>'About']);
     }
 }

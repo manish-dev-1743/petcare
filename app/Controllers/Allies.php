@@ -7,6 +7,7 @@ use App\Models\AdoptPetModel;
 use App\Models\PetModel;
 use App\Models\AnimalModel;
 use App\Models\AnimalImageModel;
+use App\Models\NotificationModel;
 use App\Models\PetProductsModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\Request;
@@ -43,7 +44,7 @@ class Allies extends BaseController
     public function petlist(){
         $pet = new AnimalModel(); 
         if($this->curr_user->type == 0){
-            $pet = $pet->findAll();
+            return redirect()->to('/admin/dashboard')->with('success','Login as Allies to add pets.');
         }else{
             $pet = $pet->where('creator_id',$this->curr_user->id)->find();
         }
@@ -80,6 +81,10 @@ class Allies extends BaseController
        
         $data = [
             'name' => $request->getPost('name'),
+            'breed' => $request->getPost('breed'),
+            'age' => $request->getPost('age'),
+            'size' => $request->getPost('size'),
+            'gender' => $request->getPost('gender'),
             'description' => $request->getPost('description'),
             'status' => ($request->getPost('status') && $request->getPost('status') == 'on') ? 1 : 0,
             'pet_id' => $request->getPost('pet_id'),
@@ -105,6 +110,23 @@ class Allies extends BaseController
         }else{
             $pet->insert($data);
             $insert_id = $pet->insertID();
+
+            $notdata = array(
+                'type' => 'animal_add',
+                'uniq_id' => $insert_id,
+                'created_at' => date('Y-m-d H:i:s'),
+                'seen' => 0
+            );
+
+            $users = new UserModel();
+            $users = $users->where('type',1)->findAll();
+            
+            $notification_model = new NotificationModel();
+            foreach($users as $u){
+                $notdata['user_id'] = $u['id'];
+                $notification_model->insert($notdata);
+                 
+            }
         }
 
         $images = $this->request->getFiles();
@@ -172,91 +194,6 @@ class Allies extends BaseController
         
         return redirect()->to('admin/pet-lists')->with('success','Successfull Deleted Animal.');
     
-    }
-
-    public function productlist(){
-        $pet = new PetProductsModel(); 
-        if($this->curr_user->type == 1){
-            $pet = $pet->findAll();
-        }else{
-            $pet = $pet->where('creator_id',$this->curr_user->id)->find();
-        }
-        return view('admin/productlist',['user' => $this->curr_user,'products'=>$pet]);
-    }
-
-    public function productdata(){
-        $pet = array();
-       
-        if(isset($_GET['id'])){
-            $pet = new PetProductsModel();
-            $pet = $pet->where('id',$_GET['id'])->find();
-        }
-        $pet_cat = new PetModel();
-        $pet_cat = $pet_cat->where('status !=',0)->find();
-        return view('admin/productadd',['user' => $this->curr_user,'product'=>$pet,'pet_cat' => $pet_cat]);
-    }
-
-    public function doproductupdate(){
-
-        $request = service('request');
-        $validation = service('validation');
-
-        $validation->setRules([
-            'title' => 'required',
-            'description' => 'required',
-            'pet_id' => 'required',
-            'price' => 'required',
-            'quantity' => 'required',
-        ]);
-        if (!$validation->withRequest($this->request)->run()) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
-        }
-       
-        $data = [
-            'title' => $request->getPost('title'),
-            'description' => $request->getPost('description'),
-            'status' => ($request->getPost('status') && $request->getPost('status') == 'on') ? 1 : 0,
-            'pet_id' => $request->getPost('pet_id'),
-            'creator_id' => $this->curr_user->id,
-            'price' => $request->getPost('price'),
-            'quantity' => $request->getPost('quantity')
-
-        ];
-        
-        if ($request->getFile('banner_image')->getPath() != '') {
-            $path = 'assets/images/animals/';
-            if (!is_dir($path)) {
-                mkdir($path, 0777, true);
-            }
-
-            $image = $request->getFile('banner_image');
-            $imageName = time() . '_' . $image->getClientName();
-            $image->move($path, $imageName);
-            $imagePath = $path . $imageName;
-            $data['banner_image'] = $imagePath;
-        }
-        $pet = new PetProductsModel();
-        if($request->getPost('id') && $request->getPost('id') != ''){
-            $pet->update($request->getPost('id'),$data);
-            $insert_id = $request->getPost('id');
-        }else{
-            $pet->insert($data);
-            $insert_id = $pet->insertID();
-        }
-
-        return redirect()->to('admin/product/lists')->with('success','Successfull Inserted Product.');
-
-    }
-
-    public function deleteproduct($id){
-        $pet = new PetProductsModel();
-        $petdata = $pet->where('id',$id)->first();
-        if($petdata && $petdata['banner_image'] != ''){
-           unlink('./'.$petdata['banner_image']);
-        }
-        $pet->where('id',$id)->delete();
-        
-        return redirect()->to('admin/product/lists')->with('success','Successfull Deleted Product.');
     }
 
     public function deletedoc(){
