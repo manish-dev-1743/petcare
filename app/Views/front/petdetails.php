@@ -13,7 +13,7 @@
             <div class="container">
                 <div class="pet-image">
                     <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
+                        <div class="swiper-wrapper" <?php if(count($animal['images']) < 2){ echo 'style="display: flex;align-items: center;justify-content: center;"'; }?>>
                             <div class="swiper-slide"><img src="<?= '/'.$animal['banner_image']; ?>"></div>
                             <?php foreach($animal['images'] as $imgs){ ?>
                                 <div class="swiper-slide"><img src="<?= '/'.$imgs['image']; ?>"></div>
@@ -25,10 +25,19 @@
                 <div class="pet-description">
                     <div class="data-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6" style="border-right:1px solid #ddd;">
                                 <h2><?= $animal['name']; ?></h2>
                 
-                                <div class="description" style="width:100%;"><?= ($animal['description']); ?></div>
+                                <div class="description" style="width:100%;"><?= ($animal['description']); ?>
+                                    <p>
+                                    <strong>Breed :</strong> <?= ($animal['breed']); ?>
+                                    </p><p>
+                                    <strong>Gender :</strong> <?= ($animal['gender']); ?>
+                                    </p><p>
+                                    <strong>Age :</strong> <?= ($animal['age']); ?>
+                                    </p>
+                                </div>
+                            
                                 <div class="btn-wrapper">
                                     <a href="#" class="btn adoptThisPet">Adopt this pet </a>
                                     <div class="icon-wrapper" style="display: flex;gap: 10px;margin-left: 10px;">
@@ -49,7 +58,8 @@
                                     <p class="description"><strong>Address : </strong>Kathmandu,Nepal</p>
                                 <?php }else{ ?>
                                     <h4><?= $seller['name']; ?></h4>
-                                    <p class="description">email:<?= $seller['email']; ?></p>
+                                    <p class="description">email:<a href="mailto:<?= $seller['email']; ?>"><?= $seller['email']; ?></a></p>
+                                    <p class="description">phone:<a href="tel:<?= $seller['phone']; ?>"><?= $seller['phone']; ?></a></p>
                                 <?php } ?>
                             </div>
                         </div>

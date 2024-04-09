@@ -165,7 +165,7 @@ class Home extends BaseController
                         'password' => $password,
                         'documents' => json_encode($documents),
                         'type' => 2,
-                        'status' => 1,
+                        'status' => 0,
                         'created_at' => date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s'),
                     );
@@ -173,7 +173,7 @@ class Home extends BaseController
                     $users = new UserModel();
                     $res = $users->add($data);
                     if($res){
-                        return redirect()->to('/login')->with('success','Successfully created Allies Account. Please Login to Continue.');
+                        return redirect()->to('/login')->with('success','Successfully created Allies Account. You can login from your account after admin verfires it within 24 hrs.');
                     }else{
                         return redirect()->back()->withInput()->with('errors', ['something went wrong']);
                     }
@@ -223,7 +223,7 @@ class Home extends BaseController
             $email = $this->request->getPost('email');
             $user = new UserModel();
             $user_details = $user->findByEmail($email);
-            if($user_details){
+            if($user_details && $user_details['status'] == 1){
                 $password = $this->request->getPost('password');
                 if(password_verify($password,$user_details['password'])){
                     $expiry_date = date('Y-m-d H:i:s',strtotime('+1 days'));
@@ -259,7 +259,7 @@ class Home extends BaseController
                     return redirect()->back()->withInput()->with('errors', ['Enter correct password to continue !!']);
                 }
             }else{
-                return redirect()->back()->withInput()->with('errors', ['User not found. Please signup to continue!!']);
+                return redirect()->back()->withInput()->with('errors', ['User not found or your usermail have been terminated!!']);
             }
             
         }else{

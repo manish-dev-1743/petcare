@@ -156,6 +156,14 @@
                                     </p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="/admin/users/list" class="nav-link <?= (getUrlSegment(1) == 'users')?'active':'' ?>">
+                                    <i class="nav-icon fa fa-users"></i>
+                                    <p>
+                                        Users
+                                    </p>
+                                </a>
+                            </li>
                         <?php endif ?>
                         <?php if( $user->type == 2 ):?>
                         <li class="nav-item">

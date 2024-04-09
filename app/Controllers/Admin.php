@@ -285,4 +285,32 @@ class Admin extends BaseController
         
         return redirect()->to('admin/blog/lists')->with('success','Successfull Deleted Blog.');
     }
+
+    public function userlist(){
+        $userlist = new UserModel();
+        $userlist = $userlist->where('type !=',0)->find();
+
+        $users = array();
+
+        foreach($userlist as $u){
+            $users[$u['type']][] = $u;
+        }
+
+        return view('admin/userlist',['user' => $this->curr_user,'users'=>$users]);
+    }
+
+    public function changeuserstatus($id){
+        $ud = new UserModel();
+        $user_details = $ud->where('id',$id)->first();
+
+        if($user_details['status'] == 1){
+            $user_details['status'] = 0;
+        }else{
+            $user_details['status'] = 1;
+        }
+        unset($user_details['id']);
+        $ud->update($id,$user_details);
+
+        return redirect()->back()->with('success','Successfull updated user status.');
+    }
 }

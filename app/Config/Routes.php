@@ -42,6 +42,9 @@ $routes->get('admin/product/update','Admin::productdata');
 $routes->post('admin/product/doupdate','Admin::doproductupdate');
 $routes->get('admin/product/delete/(:num)','Admin::deleteproduct/$1');
 
+$routes->get('admin/users/list','Admin::userlist');
+$routes->get('admin/users/changestatus/(:num)','Admin::changeuserstatus/$1');
+
 $routes->get('admin/blog/lists','Admin::bloglist');
 $routes->get('admin/blog/update','Admin::blogdata');
 $routes->post('admin/blog/doupdate','Admin::doblogupdate');
